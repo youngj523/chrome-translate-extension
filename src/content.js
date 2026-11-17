@@ -27,8 +27,17 @@
   let flushTimer = null;
   let scanTimer = null;
 
+  // 用實際的顯示方式判斷是不是「獨立一行」的區塊；句子中間的連結就算用 div 寫，通常也是 inline。
+  function isBlockLevel(el) {
+    const d = getComputedStyle(el).display;
+    return d !== "none" && d !== "contents" && !d.startsWith("inline");
+  }
+
   function isTextLeafDiv(el) {
-    if (el.querySelector(INNER_BLOCKS)) return false;
+    if (!isBlockLevel(el)) return false;
+    for (const inner of el.querySelectorAll(INNER_BLOCKS)) {
+      if (isBlockLevel(inner)) return false;
+    }
     if (el.closest("a, [role='button'], [role='link'], [role='menuitem'], [role='tab'], label")) return false;
     const words = el.innerText.trim().match(/[A-Za-z]+/g) || [];
     return words.length >= MIN_DIV_WORDS;
