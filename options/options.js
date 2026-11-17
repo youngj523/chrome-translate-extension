@@ -1,20 +1,38 @@
-import { MODELS, getSettings, saveSettings } from "../src/settings.js";
+import { MODELS, STYLES, getSettings, saveSettings } from "../src/settings.js";
 
 const $ = (id) => document.getElementById(id);
 const apiKeyEl = $("apiKey");
 const modelEl = $("model");
+const styleEl = $("style");
 const statusEl = $("status");
 
-for (const m of MODELS) {
-  const opt = document.createElement("option");
-  opt.value = m.id;
-  opt.textContent = m.label;
-  modelEl.append(opt);
+function fillSelect(select, items) {
+  for (const item of items) {
+    const opt = document.createElement("option");
+    opt.value = item.id;
+    opt.textContent = item.label;
+    select.append(opt);
+  }
 }
+fillSelect(modelEl, MODELS);
+fillSelect(styleEl, STYLES);
 
 const settings = await getSettings();
 apiKeyEl.value = settings.apiKey;
 modelEl.value = settings.model;
+styleEl.value = settings.translationStyle;
+
+async function showCacheInfo() {
+  const res = await chrome.runtime.sendMessage({ type: "cacheStats" });
+  $("cacheInfo").textContent = res ? `目前記住 ${res.count} 段。` : "";
+}
+showCacheInfo();
+
+$("clearCache").addEventListener("click", async () => {
+  await chrome.runtime.sendMessage({ type: "clearCache" });
+  await showCacheInfo();
+  showStatus("快取已清除", "ok");
+});
 
 function showStatus(text, kind = "") {
   statusEl.textContent = text;
@@ -28,7 +46,7 @@ $("toggle").addEventListener("click", () => {
 });
 
 $("save").addEventListener("click", async () => {
-  await saveSettings({ apiKey: apiKeyEl.value.trim(), model: modelEl.value });
+  await saveSettings({ apiKey: apiKeyEl.value.trim(), model: modelEl.value, translationStyle: styleEl.value });
   showStatus("已儲存", "ok");
 });
 

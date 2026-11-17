@@ -11,7 +11,7 @@ export class ClaudeError extends Error {
   }
 }
 
-export async function callClaude({ apiKey, model, system, messages, maxTokens = 16000, effort = "low" }) {
+export async function callClaude({ apiKey, model, system, messages, maxTokens = 16000, effort = "low", format }) {
   if (!apiKey) throw new ClaudeError("尚未設定 Claude API 金鑰", 0);
 
   const headers = {
@@ -23,7 +23,7 @@ export async function callClaude({ apiKey, model, system, messages, maxTokens = 
   const body = {
     model,
     max_tokens: maxTokens,
-    output_config: { effort },
+    output_config: format ? { effort, format } : { effort },
     messages,
   };
   if (system) body.system = system;
