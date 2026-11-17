@@ -13,9 +13,38 @@
   const BATCH_MAX_CHARS = 4000;
   const CONCURRENCY = 3;
 
+  // 只用 div/span 排版、沒有 <p> 的網站（例如 X 的推文），找「裡面沒有其他區塊的 div」當段落。
+  const INNER_BLOCKS = "div, p, ul, ol, li, table, section, article, header, footer, aside, h1, h2, h3, h4, h5, h6, blockquote, pre, form";
+  // 按鈕、連結文字這類短字串不翻；div 段落至少要 3 個英文單字。
+  const MIN_DIV_WORDS = 3;
+
+  function isTextLeafDiv(el) {
+    if (el.querySelector(INNER_BLOCKS)) return false;
+    if (el.closest("a, [role='button'], [role='link'], [role='menuitem'], [role='tab'], label")) return false;
+    const words = el.innerText.trim().match(/[A-Za-z]+/g) || [];
+    return words.length >= MIN_DIV_WORDS;
+  }
+
+  function isEnglishText(text) {
+    if (text.length < 2) return false;
+    const latin = (text.match(/[A-Za-z]/g) || []).length;
+    const cjk = (text.match(/[\u3400-\u9fff]/g) || []).length;
+    return latin >= 3 && latin > cjk;
+  }
+
+  function isVisible(el) {
+    return !!(el.offsetParent || getComputedStyle(el).position === "fixed");
+  }
+
   // 找出要翻譯的段落：可見、含英文、不在程式碼或導覽列裡，且不是其他候選段落的外層。
   function collectBlocks() {
-    const all = [...document.body.querySelectorAll(BLOCK_SELECTOR)];
+    const tagged = [...document.body.querySelectorAll(BLOCK_SELECTOR)];
+    const divs = [...document.body.querySelectorAll("div")].filter(
+      (el) => !el.closest(BLOCK_SELECTOR) && isTextLeafDiv(el)
+    );
+    const all = [...tagged, ...divs].sort((a, b) =>
+      a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1
+    );
     const set = new Set(all);
     return all.filter((el) => {
       if (el.closest(SKIP_ANCESTORS)) return false;
@@ -23,12 +52,8 @@
       for (const inner of el.querySelectorAll(BLOCK_SELECTOR)) {
         if (set.has(inner) && inner.innerText.trim()) return false;
       }
-      if (!el.offsetParent && getComputedStyle(el).position !== "fixed") return false;
-      const text = el.innerText.trim();
-      if (text.length < 2) return false;
-      const latin = (text.match(/[A-Za-z]/g) || []).length;
-      const cjk = (text.match(/[㐀-鿿]/g) || []).length;
-      return latin >= 3 && latin > cjk;
+      if (!isVisible(el)) return false;
+      return isEnglishText(el.innerText.trim());
     });
   }
 
