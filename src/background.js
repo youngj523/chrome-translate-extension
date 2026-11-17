@@ -1,6 +1,7 @@
 import { getSettings } from "./settings.js";
 import { callClaude, textOf } from "./claude.js";
 import { translateBatch } from "./translate.js";
+import { getCached, putCached, clearCache, cacheStats } from "./cache.js";
 
 // 點工具列按鈕：還沒設定金鑰就打開設定頁；否則在目前分頁開關雙語翻譯。
 chrome.action.onClicked.addListener(async (tab) => {
@@ -27,12 +28,28 @@ chrome.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
     handleTranslate(msg.texts).then(sendResponse);
     return true;
   }
+  if (msg?.type === "cacheStats") {
+    cacheStats().then(sendResponse);
+    return true;
+  }
+  if (msg?.type === "clearCache") {
+    clearCache().then(() => sendResponse({ ok: true }));
+    return true;
+  }
 });
 
 async function handleTranslate(texts) {
   try {
     const { apiKey, model } = await getSettings();
-    const translations = await translateBatch({ apiKey, model, texts });
+    const translations = await getCached(model, texts);
+    // 只把沒快取到的段落送給 Claude。
+    const missing = texts.map((t, i) => (translations[i] === undefined ? i : -1)).filter((i) => i >= 0);
+    if (missing.length) {
+      const missingTexts = missing.map((i) => texts[i]);
+      const fresh = await translateBatch({ apiKey, model, texts: missingTexts });
+      missing.forEach((idx, j) => (translations[idx] = fresh[j]));
+      await putCached(model, missingTexts, fresh);
+    }
     return { ok: true, translations };
   } catch (e) {
     return { ok: false, error: e.message };

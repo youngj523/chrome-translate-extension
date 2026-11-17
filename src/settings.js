@@ -5,9 +5,16 @@ export const MODELS = [
   { id: "claude-haiku-5-5", label: "Claude Haiku 5.5（最便宜、最快）" },
 ];
 
+export const STYLES = [
+  { id: "faded", label: "淡色（沿用原文顏色，稍微變淡）" },
+  { id: "small", label: "灰色小一號字" },
+  { id: "bar", label: "左側加藍色色條" },
+];
+
 export const DEFAULTS = {
   apiKey: "",
   model: "claude-opus-5-5",
+  translationStyle: "faded",
 };
 
 export async function getSettings() {

@@ -1,10 +1,15 @@
 .bt-translation {
   display: block;
   margin-top: 0.3em;
-  color: inherit;
-  opacity: 0.85;
   font-weight: normal;
 }
-.bt-translation.bt-loading { opacity: 0.45; font-style: italic; }
+/* 淡色（預設）：沿用原文顏色，降低透明度，在深色網頁上也看得清楚 */
+html.bt-style-faded .bt-translation { opacity: 0.75; }
+/* 灰色小字 */
+html.bt-style-small .bt-translation { color: #6b7280; font-size: 0.9em; }
+/* 左側色條 */
+html.bt-style-bar .bt-translation { border-left: 3px solid #60a5fa; padding-left: 0.6em; }
+
+.bt-translation.bt-loading { opacity: 0.4; font-style: italic; }
 .bt-translation.bt-error { color: #b91c1c; opacity: 1; font-size: 0.85em; }
 html.bt-hidden .bt-translation { display: none !important; }

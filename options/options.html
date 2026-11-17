@@ -19,6 +19,14 @@
     <label for="model">翻譯用的模型</label>
     <select id="model"></select>
 
+    <label for="style">譯文樣式</label>
+    <select id="style"></select>
+    <p class="hint">改了之後，已開啟的網頁會立刻套用。</p>
+
+    <label>翻譯快取</label>
+    <p class="hint">同一段文字翻過一次就會記住，之後不再花錢重翻。<span id="cacheInfo"></span></p>
+    <button id="clearCache" type="button">清除快取</button>
+
     <div class="actions">
       <button id="save" type="button">儲存</button>
       <button id="test" type="button">測試金鑰</button>
