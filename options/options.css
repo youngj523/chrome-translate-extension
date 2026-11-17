@@ -1,0 +1,15 @@
+body { font-family: system-ui, "Noto Sans TC", sans-serif; background: #f7f7f8; color: #1f1f1f; margin: 0; }
+main { max-width: 520px; margin: 40px auto; padding: 24px; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+h1 { font-size: 20px; margin-top: 0; }
+label { display: block; font-weight: 600; margin: 20px 0 6px; }
+input, select { width: 100%; box-sizing: border-box; padding: 8px 10px; font-size: 14px; border: 1px solid #ccc; border-radius: 6px; }
+.row { display: flex; gap: 8px; }
+.row input { flex: 1; }
+.hint { font-size: 13px; color: #666; margin: 6px 0 0; }
+.actions { display: flex; gap: 8px; margin-top: 24px; }
+button { padding: 8px 16px; font-size: 14px; border-radius: 6px; border: 1px solid #ccc; background: #fff; cursor: pointer; }
+#save { background: #2563eb; border-color: #2563eb; color: #fff; }
+button:disabled { opacity: .6; cursor: default; }
+#status { min-height: 1.4em; font-size: 14px; }
+#status.ok { color: #15803d; }
+#status.err { color: #b91c1c; }

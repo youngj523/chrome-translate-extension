@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "雙語對照翻譯",
+  "version": "0.1.0",
+  "description": "用 Claude 把網頁英文段落翻成繁體中文，譯文顯示在原文正下方。",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["https://api.anthropic.com/*"],
+  "background": {
+    "service_worker": "src/background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "雙語對照翻譯"
+  },
+  "options_page": "options/options.html"
+}

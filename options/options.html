@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8">
+  <title>雙語對照翻譯 設定</title>
+  <link rel="stylesheet" href="options.css">
+</head>
+<body>
+  <main>
+    <h1>雙語對照翻譯 設定</h1>
+
+    <label for="apiKey">Claude API 金鑰</label>
+    <div class="row">
+      <input id="apiKey" type="password" autocomplete="off" placeholder="sk-ant-...">
+      <button id="toggle" type="button">顯示</button>
+    </div>
+    <p class="hint">到 <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a> 建立金鑰並儲值。金鑰只存在這台電腦的 Chrome 裡。</p>
+
+    <label for="model">翻譯用的模型</label>
+    <select id="model"></select>
+
+    <div class="actions">
+      <button id="save" type="button">儲存</button>
+      <button id="test" type="button">測試金鑰</button>
+    </div>
+    <p id="status" role="status"></p>
+  </main>
+  <script type="module" src="options.js"></script>
+</body>
+</html>
