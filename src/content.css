@@ -1,0 +1,10 @@
+.bt-translation {
+  display: block;
+  margin-top: 0.3em;
+  color: inherit;
+  opacity: 0.85;
+  font-weight: normal;
+}
+.bt-translation.bt-loading { opacity: 0.45; font-style: italic; }
+.bt-translation.bt-error { color: #b91c1c; opacity: 1; font-size: 0.85em; }
+html.bt-hidden .bt-translation { display: none !important; }
